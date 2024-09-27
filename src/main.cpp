@@ -35,8 +35,10 @@
 // selection register 0x09 to 0x0E 
 
 // enable the normal mode
+
 void enable_normal_mode(){
   Wire.beginTransmission(KTD2061Q);
+  
   Wire.write(CTRL_REG);                   // normal mode enable
   Wire.write(0x80);                       //10000000 will enable normal mode and supply a current of 0 to 24mA
   Wire.endTransmission();
@@ -44,26 +46,52 @@ void enable_normal_mode(){
 
 void set_green_color(){
   Wire.beginTransmission(KTD2061Q);
+  Wire.write(IBLU0_REG);
+  Wire.write(0);
+  Wire.write(IBLU1_REG);
+  Wire.write(0);
+  Wire.write(IRED0_REG);
+  Wire.write(0);
+  Wire.write(IRED1_REG);
+  Wire.write(0);
   Wire.write(ISELA12_REG);                // selecting A bus Two LEDS
   Wire.write(0xAA);                       // green color for two LEDS,- 1010 1010 
 
   Wire.write(ISELA34_REG);                // selecting third LED - green color
   Wire.write(0xA0);                       // 1010 0000 
-  Wire.endTransmission();
+  Wire.endTransmission();                 // blinking LED part to be added 
 
 
 }
 
 void set_blue_color(){
   Wire.beginTransmission(KTD2061Q);
+  Wire.write(IGRN0_REG);
+  Wire.write(0);
+  Wire.write(IGRN1_REG);
+  Wire.write(0);
+  Wire.write(IRED0_REG);
+  Wire.write(0);
+  Wire.write(IRED1_REG);
+  Wire.write(0);
   Wire.write(ISELB12_REG);
-  Wire.write(0x99);                       //  blue color for two LEDS 1001 1001 
+
+  Wire.write(0x90);                       //  blue color for two LEDS 1001 1100 
   Wire.endTransmission();
+
 
 }
 
 void set_yellow_color(){
+
   Wire.beginTransmission(KTD2061Q);
+  Wire.write(IRED0_REG);
+  Wire.write(0);
+  Wire.write(IRED1_REG);
+  Wire.write(0);
+  Wire.write(ISELB12_REG);
+  Wire.write(0x0D);                       // selecting bus B for Yellow
+
   Wire.write(ISELC12_REG);                // Selecting C bus for two LEDS
   Wire.write(0xDD);                       // Yellow color for two LEDS
 
@@ -74,6 +102,15 @@ void set_yellow_color(){
 
 void set_red_color(){
   Wire.beginTransmission(KTD2061Q);
+  Wire.write(IBLU0_REG);
+  Wire.write(0);
+  Wire.write(IBLU1_REG);
+  Wire.write(0);
+  Wire.write(IGRN1_REG);
+  Wire.write(0);
+  Wire.write(IGRN0_REG);
+  Wire.write(0);
+
   Wire.write(ISELA12_REG);                // Selecting bus A 
   Wire.write(0xCC);                       // red color in case of error or warning 1100 1100
 
@@ -93,11 +130,17 @@ void set_red_color(){
 void setup() {
 Wire.begin();
 Serial.begin(115200);
+Serial.println("Setup finished");
 enable_normal_mode();
+Serial.println("Normal mode");
 set_blue_color();
+delay(100);
 set_green_color();
+delay(100);
 set_yellow_color();
+delay(100);
 set_red_color();
+delay(100);
 
 }
 
