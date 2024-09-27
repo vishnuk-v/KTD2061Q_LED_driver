@@ -125,9 +125,11 @@ void set_red_color(){
 
   Wire.write(ISELC34_REG);                // selecting bus C
   Wire.write(0XCC);                       // red color for timer LEDS
+  Wire.endTransmission();
 }
 
 void setup() {
+Wire.setPins(21,22);
 Wire.begin();
 Serial.begin(115200);
 Serial.println("Setup finished");
